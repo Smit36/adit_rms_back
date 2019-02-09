@@ -1,28 +1,22 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let UserSchema = new Schema({
-    username: {
-        type: String,
-        minlength: 3,
-        unique: false
+let AditRmsSchema = new Schema({
+    subjectCode: {
+        type: String
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true
+    department: {
+        type: String
     },
     password: {
         type: String
     },
-    profileImage: {
-        type: String,
+    semester: {
+        type: String
     },
-    accountType: {
-        type: String,
-        required: true,
-        default: 'user'
+    sheetData: {
+        type: Object
     }
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('adit_rms', AditRmsSchema);
