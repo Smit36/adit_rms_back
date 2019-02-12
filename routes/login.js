@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const uuid = require('uuid/v1');
+
 const rms = require('../model/user');
 
 const credentials = {
@@ -27,7 +30,7 @@ router.post('/', (req, res) => {
             error: true,
             errorMessage: 'Valid department is required',
             errorType: 'department'
-        })
+        });
     } else if (userData.semester < 1 && userData.semester > 8) {
         return res.status(200).json({
             error: true,
@@ -61,12 +64,14 @@ router.post('/', (req, res) => {
 
                     const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
+                    const sheetId = data.sheetData.sheetId;
+
                     drive.permissions.create({
                         resource: {
                             type: 'anyone',
                             role: 'writer'
                         },
-                        fileId: data.sheetData.sheetId,
+                        fileId: sheetId,
                         fields: 'id'
                     }, (err, response) => {
                         if (err) {
@@ -79,13 +84,39 @@ router.post('/', (req, res) => {
                             department: userData.department,
                             semester: userData.semester,
                             subjectCode: userData.subjectCode,
-                            sheetId: data.sheetData.sheetId
+                            sheetId,
+                            id: uuid()
                         }
-                        let token = jwt.sign(jwtPayload, process.env.JWT_KEY, { expiresIn: '1h' });
-                        return res.status(200).json({
-                            error: false,
-                            url: data.sheetData.url,
-                            jwtToken: token
+                        let token = jwt.sign(jwtPayload, process.env.JWT_KEY, { expiresIn: 60 * 1 });
+                        fs.readFile('routes/sessions.json', (err, fileData) => {
+                            if (err) {
+                                return res.status(200).json({
+                                    error: true,
+                                    errorMessage: err
+                                });
+                            } else {
+                                fileData = JSON.parse(fileData);
+                                if (fileData[sheetId]) {
+                                    fileData[sheetId].push(token);
+                                } else {
+                                    fileData[sheetId] = [token];
+                                }
+                                fileData = JSON.stringify(fileData, null, 4);
+                                fs.writeFile('routes/sessions.json', fileData, (err) => {
+                                    if (err) {
+                                        return res.status(200).json({
+                                            error: true,
+                                            errorMessage: err
+                                        });
+                                    } else {
+                                        return res.status(200).json({
+                                            error: false,
+                                            url: data.sheetData.url,
+                                            jwtToken: token
+                                        });
+                                    }
+                                });
+                            }
                         });
                     });
                 }
@@ -96,13 +127,13 @@ router.post('/', (req, res) => {
                 });
             }
         }).catch(err => {
-            console.log("Something unexpected happen. See your server terminal logs to know more: ", err)
+            console.log(err);
             return res.status(200).json({
                 error: true,
-                errorMessage: 'Not a valid password',
+                errorMessage: err,
                 solution: 'Something unexpected happen. See your server terminal logs to know more.'
             });
-        })
+        });
     }
 });
 

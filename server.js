@@ -6,6 +6,9 @@ const login = require('./routes/login')
 const register = require('./routes/register');
 const sheet = require('./routes/sheet');
 const collegeData = require('./routes/collegeData');
+const sessionCallback = require('./routes/sessionCallback');
+const sessionCheck = require('./routes/sessionCheck');
+
 // const rms = require('./model/user');
 
 const app = express();
@@ -25,6 +28,8 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// setInterval(sessionCheck, 60 * 1000);
+
 app.use('/user/login', login);
 
 app.use('/college/data', collegeData);
@@ -32,6 +37,8 @@ app.use('/college/data', collegeData);
 app.use('/user/register', register);
 
 app.use('/sheet/mode', sheet);
+
+app.use('/session/callback', sessionCallback);
 
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
