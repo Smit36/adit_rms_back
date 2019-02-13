@@ -1,5 +1,6 @@
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
 
 const changeMode = require('../controllers/changeMode');
 
@@ -24,8 +25,8 @@ const sessionCheck = (token) => {
             for (let key in data) {
                 for (let value of data[key]) {
                     jwt.verify(value, process.env.JWT_KEY, (err, decoded) => {
-                        console.log('came in');
-                        if (err) {
+                        const diff = moment().unix() - decoded.iat;
+                        if (err || diff >= 120) {
                             data[key].splice(data[key].indexOf(value), 1);
                             if (!data[key].length) {
                                 changeMode(key, function(err) {

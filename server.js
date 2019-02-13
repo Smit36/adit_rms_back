@@ -8,7 +8,6 @@ const sheet = require('./routes/sheet');
 const collegeData = require('./routes/collegeData');
 const sessionCallback = require('./routes/sessionCallback');
 const sessionCheck = require('./routes/sessionCheck');
-
 // const rms = require('./model/user');
 
 const app = express();
@@ -28,7 +27,7 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// setInterval(sessionCheck, 60 * 1000);
+setInterval(sessionCheck, 1000 * 60 * 2);
 
 app.use('/user/login', login);
 

@@ -87,7 +87,7 @@ router.post('/', (req, res) => {
                             sheetId,
                             id: uuid()
                         }
-                        let token = jwt.sign(jwtPayload, process.env.JWT_KEY, { expiresIn: 60 * 1 });
+                        let token = jwt.sign(jwtPayload, process.env.JWT_KEY, { expiresIn: 60 * 60 });
                         fs.readFile('routes/sessions.json', (err, fileData) => {
                             if (err) {
                                 return res.status(200).json({

@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
                 id: uuid(),
                 sheetId: decoded.sheetId
             }
-            const newToken = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: 60 * 1 });
+            const newToken = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: 60 * 60 });
             fs.readFile('routes/sessions.json', (err, data) => {
                 if (err) {
                     return res.status(200).json({
