@@ -27,7 +27,7 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-setInterval(sessionCheck, 1000 * 60 * 2);
+setInterval(sessionCheck, 1000 * 60);
 
 app.use('/user/login', login);
 
