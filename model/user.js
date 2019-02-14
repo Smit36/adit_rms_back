@@ -5,13 +5,7 @@ let AditRmsSchema = new Schema({
     subjectCode: {
         type: String
     },
-    department: {
-        type: String
-    },
     password: {
-        type: String
-    },
-    semester: {
         type: String
     },
     sheetData: {

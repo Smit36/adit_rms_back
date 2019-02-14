@@ -19,25 +19,11 @@ const credentials = {
 
 router.post('/', (req, res) => {
     const userData = {
-        department: req.body.department,
-        semester: req.body.semester,
         subjectCode: req.body.subjectCode,
         password: req.body.password
     }
 
-    if (!userData.department) {
-        return res.status(200).json({
-            error: true,
-            errorMessage: 'Valid department is required',
-            errorType: 'department'
-        });
-    } else if (userData.semester < 1 && userData.semester > 8) {
-        return res.status(200).json({
-            error: true,
-            errorMessage: 'Valid semester is required',
-            errorType: 'semester'
-        });
-    } else if (!userData.subjectCode) {
+    if (!userData.subjectCode) {
         return res.status(200).json({
             error: true,
             errorMessage: 'Valid subject code is required',
@@ -111,7 +97,7 @@ router.post('/', (req, res) => {
                                     } else {
                                         return res.status(200).json({
                                             error: false,
-                                            url: data.sheetData.url,
+                                            url: 'https://docs.google.com/spreadsheets/d/' + sheetId,
                                             jwtToken: token
                                         });
                                     }
